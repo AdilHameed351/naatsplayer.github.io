@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang='en' dir='ltr'>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Jost&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet" />
+    <style type="text/css">
+        *,
+        *::before,
+        *::after{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html{
+            font-size: 62.5%;
+            font-family: 'Jost', sans-serif;
+        }
+
+        .main_div{
+            width: 100vw;
+            height: 100vh;
+            background-color: #f6f6f6;
+            display: grid;
+            place-items: center;
+        }
+
+        .music_container{
+            width: 35rem;
+            height: 58rem;
+            background-color: #fff;
+            border-radius: 2rem;
+            box-shadow: 0 1.2rem 3rem 0.5rem rgba(0, 0, 0, .2);
+            padding: 3rem;
+            padding-top: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .music_container #title{
+            text-transform: uppercase;
+            letter-spacing: .2rem;
+            word-spacing: 0.5rem;
+            color: #171717;
+            margin: 2rem 0 1.5rem 0;
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-shadow: 0 .3rem .5rem rgba(0, 0, 0, .3);
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        #music_count{
+            opacity: 0.6;
+        }
+
+        .music_container #artist{
+            color: #cccaca;
+            text-transform: capitalize;
+            letter-spacing: 0.1rem;
+            font-size: 2rem;
+            margin-bottom: 4rem;
+            font-weight: 300;   
+        }
+
+        .img_container{
+            width: 25rem;
+            height: 25rem;
+            margin: auto;
+        }
+
+        img{
+            /* make the image object fit and circle */
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 1.2rem 3rem 0.5rem rgba(0, 0, 0, 0.4);
+        }
+
+        .music_controls{
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .music_controls .fas{
+            color: #111111;
+            font-size: 2rem;
+            cursor: pointer;
+            filter: drop-shadow(0 1.2rem 3rem .5rem rgba(0, 0, 0, 0.4));
+        }
+
+        .music_controls .fas.main_button{
+            width: 5rem;
+            height: 5rem;
+            background-color: #111;
+            border-radius: 50%;
+            color: #f6f6f6;
+            font-size: 1.4rem;
+            display: grid;
+            place-items: center;
+        }
+
+        .music_controls .fas:hover{
+            color: gray;
+        }
+
+        .music_controls .fa-play:hover{
+            background-color: #f6f6f6;
+            color: #111;
+            box-shadow: 0 1rem 2rem .2rem rgba(0, 0, 0, 0.4);
+        }
+
+        /* add anime class to animate */
+        .anime{
+            animation: rotatePlayer 3s linear infinite;
+        }
+
+
+        @keyframes rotatePlayer{
+            0%{
+                transform: rotate(0deg);
+            }
+            100%{
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes bufferPlayer{
+            0%{
+                transform: scale(1);
+            }
+            95%{
+                transform: scale(1);      
+            }
+            100%{
+                transform: scale(1.1);
+            }
+        }
+
+         @media screen and (max-width: 468px){
+            .music_container{
+                width: 90vw;
+                height: 58rem;
+                overflow: hidden;    
+            }
+
+            .music_container #title{
+                font-size: 2rem;
+            }
+
+            .music_container #artist{
+                font-size: 1.5rem;
+            }
+
+            .img_container{
+                width: 70vw;
+                height: 70vw;
+            }
+        } 
+
+        /* progress style */
+        .progressbar_container{
+            width: 100%;
+            height: auto;
+            padding: 1rem 0;
+            margin-top: 1rem;
+        }
+
+        .progress_div{
+            width: 100%;
+            height: .5rem;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.07), 
+                        0 2px 4px rgba(0, 0, 0, 0.07),
+                        0 4px 8px rgba(0, 0, 0, 0.07),
+                        0 8px 16px rgba(0, 0, 0, 0.07),
+                        0 16px 32px rgba(0, 0, 0, 0.07),
+                        0 32px 64px rgba(0, 0, 0, 0.07);
+            border-radius: 4rem;
+            position: relative;
+            margin-top: .5rem;
+            cursor: pointer;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .progress_duration_meter{
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.2rem;
+        }
+
+        .progress{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background-color: #3498db;
+            border-radius: 4rem;
+            cursor: pointer;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        #muted_btn_div{
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 40px;
+            height: 40px;
+            font-size: 15px;
+            box-shadow: 0 1rem 2rem .2rem rgba(0, 0, 0, 0.4);
+            padding: 10px;
+            border-radius: 50%;
+            background-color: #fff;
+            color: #000;
+            cursor: pointer;
+        }
+
+        #muted_btn_div:hover{
+            background-color: rgba(0, 0, 0, .8);
+            color: #fff;
+        }
+    </style>
+    <title>Naats Collection - Audio</title>
+</head>
+<body>
+    <div class="main_div">
+        <div class="music_container">
+            <h4 id="music_count">1 / 10</h4>
+            <h2 id="title">SHAH E MADINA</h2>
+            <h3 id="artist">Shabeena Majida</h3>
+            <div class="img_container">
+                <img src="images/image-1.jpg" alt="Naat Image"/>
+            </div>
+            <audio src="naats(audio)/audio-1.mp3" alt="Naat Audio"></audio>
+            
+            <!-- progress bar -->
+            <div class="progressbar_container" id="progress_container">
+                <div class="progress_duration_meter">
+                    <div id="current_time">00:00</div>
+                    <div id="duration">05:57</div>
+                </div>
+                <div class="progress_div" id="progress_div">
+                    <div class="progress" id="progress"></div>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="music_controls">
+                <i class="fas fa-backward" id="prev" title="Previous"></i>
+                <i class="fas fa-play main_button" id="play" title="Play"></i>
+                <i class="fas fa-forward" id="next" title="Next"></i>
+            </div>
+            <div id="muted_btn_div">
+                <i class="fas fa-volume-up" id="volume_state"></i>
+            </div>
+        </div>
+        
+    </div>
+
+    <script type="text/javascript">
+        const music = document.querySelector('audio');
+        const img = document.querySelector('img'); 
+        const title = document.getElementById('title');
+        const artist = document.getElementById('artist');
+        const prev = document.getElementById('prev');
+        const play = document.getElementById('play');
+        const next = document.getElementById('next');
+        let progress = document.getElementById('progress');
+        let total_duration = document.getElementById('duration');
+        let current_time = document.getElementById('current_time');
+        const progress_div = document.getElementById('progress_div');
+        let btn_div = document.getElementById('muted_btn_div');
+        let volume_state = document.getElementById('volume_state');
+        let music_count = document.getElementById('music_count');
+
+        const songs = [
+            {
+                name: 'audio-1',
+                title: 'SHAH E MADINA',
+                artist: 'Shabeena Majida',
+                image: 'image-1',
+                total_duration: '05:57',
+                music_count: '1 / 10',
+            },
+            {
+                name: 'audio-2',
+                title: 'PRO LA ILLAHA ILLALLAH',
+                artist: 'Shabeena Majida',
+                image: 'image-2',
+                total_duration: '06:32',
+                music_count: '2 / 10',
+            },
+            {
+                name: 'audio-3',
+                title: 'DAI HALEEMA',
+                artist: 'Shahbaz Qamar',
+                image: 'image-3',
+                total_duration: '08:47',
+                music_count: '3 / 10',
+            },
+            {
+                name: 'audio-4',
+                title: 'Sare Nabian Tu',
+                artist: 'Shahbaz Qamar',
+                image: 'image-4',
+                total_duration: '06:26',
+                music_count: '4 / 10',
+            },
+            {
+                name: 'audio-5',
+                title: 'Madni Da Dera',
+                artist: 'Shahbaz Qamar',
+                image: 'image-5',
+                total_duration: '11:41',
+                music_count: '5 / 10',
+            },
+            {
+                name: 'audio-6',
+                title: 'Aqa Meriyan',
+                artist: 'Shahbaz Qamar',
+                image: 'image-6',
+                total_duration: '08:20',
+                music_count: '6 / 10',
+            },
+            {
+                name: 'audio-7',
+                title: 'Aqa Mera Sohna',
+                artist: 'Shahbaz Qamar',
+                image: 'image-7',
+                total_duration: '07:16',
+                music_count: '7 / 10',
+            },
+            {
+                name: 'audio-8',
+                title: 'Ik Khawab',
+                artist: 'Rahat Fateh',
+                image: 'image-8',
+                total_duration: '07:33',
+                music_count: '8 / 10',
+            },
+            {
+                name: 'audio-9',
+                title: 'Nabi Naal Payar',
+                artist: 'Shabeena, Sehrish',
+                image: 'image-9',
+                total_duration: '12:18',
+                music_count: '9 / 10',
+            },
+            {
+                name: 'audio-10',
+                title: 'Ik Mai Hi Nahi',
+                artist: 'Shabeena Majida',
+                image: 'image-10',
+                total_duration: '10:08',
+                music_count: '10 / 10',
+            },
+        ]
+
+        let isPlaying = false;
+        play.addEventListener('click', () => {
+            if(!isPlaying){    //for play functionality
+                music.play();
+                play.classList.replace('fa-play', 'fa-pause');
+                img.classList.add('anime');
+                img.style.animationPlayState = 'running';
+                isPlaying = true;
+            }else{      //for pause functionality
+                music.pause();
+                play.classList.replace('fa-pause', 'fa-play');
+                img.style.animationPlayState = 'paused';
+                isPlaying = false;
+            }
+        });
+        
+        //changing the music data
+        const loadSong = (songs) => {
+            music_count.textContent = songs.music_count;
+            title.textContent = songs.title;
+            artist.textContent = songs.artist;
+            music.src = `naats(audio)/${songs.name}.mp3`;
+            img.src = `images/${songs.image}.jpg`;
+            total_duration.textContent = songs.total_duration;
+        };
+ 
+        songIndex = 0;
+        // loadSong(songs[2]);
+
+        const prevSong = () => {
+            music.pause();
+            play.classList.replace('fa-pause', 'fa-play');
+            img.classList.remove('anime');
+            progress.style.width = 0;
+            isPlaying = false;
+             if(songIndex == 0){
+                songIndex = 9;
+                loadSong(songs[songIndex]);
+             }else{
+                 songIndex--;
+                 loadSong(songs[songIndex]);
+             }
+        }
+
+        const nextSong = () => {
+            music.pause();
+            play.classList.replace('fa-pause', 'fa-play');
+            img.classList.remove('anime');
+            progress.style.width = 0;
+            isPlaying = false;                   
+            if(songIndex == 9){
+                songIndex = 0;
+                loadSong(songs[songIndex]);
+            }else{
+                songIndex++;
+                loadSong(songs[songIndex]);
+            }
+        }
+
+        // progress js work
+
+        music.addEventListener('timeupdate', (event) => {
+            const { currentTime, duration } = event.srcElement; 
+
+            let progress_time = (currentTime / duration) * 100;
+            progress.style.width = `${progress_time}%`;
+
+            // music current duration update
+            let min_current_duration = Math.floor(currentTime / 60);
+            let sec_current_duration = Math.floor(currentTime % 60);
+
+            if(min_current_duration < 10 && sec_current_duration < 10){
+                current_time.textContent = `0${min_current_duration}:0${sec_current_duration}`;
+            }
+            else if(min_current_duration < 10){
+                current_time.textContent = `0${min_current_duration}:${sec_current_duration}`;
+            }else if(sec_current_duration < 10){
+                current_time.textContent = `${min_current_duration}:0${sec_current_duration}`;
+            }else{
+                current_time.textContent = `${min_current_duration}:${sec_current_duration}`;
+            } 
+        });
+
+        // progress onclick functionality
+        progress_div.addEventListener('click', (evnet) => {
+            const { duration } = music;     //(Same As) ---> const duration = music.duration
+            let move_progress = (event.offsetX / event.srcElement.clientWidth) * duration;
+            console.log(move_progress);
+            music.currentTime = move_progress;
+        });
+
+        //if song end call nextSong function
+        music.addEventListener('ended', nextSong);
+
+        prev.addEventListener('click', prevSong);
+        next.addEventListener('click', nextSong);
+
+        let mutedMusic = false;
+        //muted & un-muted button
+        btn_div.addEventListener('click', () =>{
+            if(!mutedMusic){
+                volume_state.classList.replace('fa-volume-up', 'fa-volume-mute');
+                music.muted = true;
+                mutedMusic = true;
+
+            }else{
+                volume_state.classList.replace('fa-volume-mute', 'fa-volume-up');
+                music.muted = false;
+                mutedMusic = false;
+            }
+        });
+    </script>
+</body>
+</html> 
